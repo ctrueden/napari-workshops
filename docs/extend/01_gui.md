@@ -17,7 +17,7 @@ kernelspec:
 your way around the napari viewer — from the GUI essentials to running example
 scripts.
 
-# Welcome (10 min)
+# Welcome
 
 - Introduce instructors and helpers
 - Share the [Code of Conduct](https://napari.org/stable/community/code_of_conduct.html)
@@ -26,7 +26,7 @@ scripts.
   you work with?"*
 - Ask about accessibility needs (private DMs on Zulip will be monitored)
 
-# Workshop Overview (5 min)
+# Workshop Overview
 
 This workshop has **four blocks**:
 
@@ -34,12 +34,9 @@ This workshop has **four blocks**:
 |-------|-------|
 | **1** | Welcome and GUI Walkthrough — get oriented in the napari viewer |
 | **2** | Python, Data, and Metadata — control napari from Python, set physical scales, work with xarray and Zarr |
-| **3** | Custom Widgets and Interactions — build interactive GUIs with magicgui, keybindings, and mouse callbacks |
+| **3** | Custom Widgets and Interactions — build interactive GUIs with magicgui, layer events, and mouse callbacks |
 | **4** | From Script to Plugin — package your custom tools as pip-installable napari plugins |
 
-The workshop blurb says it best:
-
-```{admonition}
 With everything from microscopes to telescopes to satellites, scientists
 produce image data in countless formats, shapes, sizes, and dimensions.
 napari is a Python library for multidimensional image visualization, but it
@@ -51,9 +48,8 @@ analysis in napari, then show how to extend the napari user interface to
 make analysis workflows as easy as pushing a button, and finally show how
 to share these extensions as *plugins*, which can be easily installed by
 users and collaborators.
-```
 
-# About napari (3 min)
+# About napari
 
 [napari](https://napari.org) is a free, open-source, multi-dimensional image viewer for Python. It is:
 
@@ -62,17 +58,33 @@ users and collaborators.
 - **Interoperable** — works with NumPy, xarray, Zarr, TIFF, and more
 - **Interactive** — explore and annotate your data with a GUI or from Python
 
-# What Are Images? (3 min)
+# What Are Images?
 
 A quick conceptual grounding before we open our first image:
 
-- **Images are arrays of numbers** — each pixel has an intensity value
-- **n-dimensional** — images can have more dimensions than just height and width
-- **Common convention**: TZYX — time, depth (z), height (y), width (x)
-- **Labels** — images where pixel values are integer categories (0=background, 1=object1, etc.)
-- **Scale and units** — each pixel corresponds to a real-world physical size
+Before diving into napari, a quick conceptual grounding:
 
-# Open Your First Image (5 min)
+- **Images are arrays of numbers** — each pixel has a value (brightness, intensity)
+- **n-dimensional images** — beyond rows and columns in an array, images can have more array indexes
+- **zero-based indexing** — the first element/pixel is at position 0, not 1
+- A common (but not universal) **convention**: TZYX ordering for time, depth, height, and width dimensions
+- **multi-channel images**  — can be just another dimension in the array (e.g. RGB(A) is shape height, width, 3 (or 4))
+- **labels** — images where pixel values are integers representing categories (e.g. 0=background, 1=cell1, 2=cell2, etc.)
+- **scale and units** — each pixel corresponds to a real-world physical size
+
+napari can display all of these — the dimension sliders let you navigate indexes
+beyond the 2D canvas.
+
+![Diagram showing that images are arrays of numbers rendered as pixel brightness, zero-based indexing, n-dimensional TZYX stacks, multi-channel images as an extra axis, integer-labeled images, and a brief comparison of raster arrays vs. vector graphics (Points, Shapes, Vectors, Tracks layers).](../_resources/arrays_and_images_diagram.svg)
+
+# Open Your First Image
+
+```{tip} Take a tour!
+If napari is open and you'd like a quick guided tour of the interface, open
+**Help > Take a tour** (available since napari 0.9.0). It highlights the
+canvas, layer list, layer controls, viewer buttons, dimension sliders, and
+status bar, so you can get your bearings in seconds.
+```
 
 Let's get the viewer up and running with a sample dataset:
 
@@ -115,7 +127,7 @@ Save what you see in napari at any time:
 Keyboard shortcut: `Alt+S` (saves to file) or `Alt+C` (copies to clipboard).
 Add Shift to include the viewer UI: `Alt+Shift+S` or `Alt+Shift+C`.
 
-# GUI Essentials Walkthrough (15 min)
+# GUI Essentials Walkthrough
 
 Follow along as we walk through the major parts of the napari
 interface.
@@ -138,7 +150,7 @@ so we can help — and improve the workshop for next time!
 
 ## Key Interactions
 
-- **Zoom:** right-click and drag or scroll wheel (two-finger scroll on trackpad)
+- **Canvas zoom:** right-click and drag or scroll wheel (two-finger scroll on trackpad)
 - **Pan:** click and drag on the canvas — hold Shift to pan in 3D mode
 - **Reset view:** click the **home button** in the viewer button row (bottom-left)
 
@@ -184,7 +196,7 @@ In 3D mode, click-drag to rotate the volume. Give it a try!
 :tags: [remove-cell]
 
 viewer.dims.axis_labels = ['Z', 'Y', 'X']
-viewer.axes.visible = True
+viewer.scene.overlays.axes.visible = True
 viewer.dims.ndisplay = 3
 ```
 
@@ -198,8 +210,9 @@ nbscreenshot(viewer)
 
 napari can display helpful overlays on the canvas. Here are the most useful ones:
 
-- **Floating Axes**: **View > Axes > Floating Axes Visible** — shows axis labels in the corner of the canvas.
-- **Scale bar**: **View > Scale Bar > Visible** — displays the physical scale in real-world units. We'll set units in Block 2.
+- **Scene Axes**: **View > Scene Axes > Toggle Scene Axes** — shows the x/y/z axes in 3D.
+- **Canvas Axes**: **View > Canvas Axes > Toggle Canvas Axes** — shows axis labels in the corner of the canvas.
+- **Scale bar**: **View > Scale Bar > Toggle Scale Bar** — displays the physical scale in real-world units. We'll set units in Block 2.
 - **Color bar**: Right-click a layer or use **Layers > Measure > Color Bar** — shows the colormap-to-intensity mapping for the selected layer.
 
 ```{tip} The Command Palette
@@ -221,7 +234,7 @@ lets you change how that layer appears. The most important controls:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-viewer.axes.visible = False
+viewer.scene.overlays.axes.visible = False
 viewer.dims.ndisplay = 2
 viewer.dims.current_step = (29, 100, 100)
 nuclei = viewer.layers['nuclei']
@@ -273,7 +286,7 @@ napari canvas. napari runs it automatically.
 
 Speaking of which…
 
-# Gallery Exploration Breakout (10 min)
+# Gallery Exploration Breakout
 
 ```{admonition} Breakout
 :class: tip
@@ -307,7 +320,7 @@ Add a note: *what example did you try, and what surprised or interested you?*
 7. Tracks 3D
 8. Surface with multiple textures
 
-# Sharing Time (3 min)
+# Sharing Time
 
 - What did you find in the gallery? *(check the Zulip stream for screenshots!)*
 - Any surprising layer types or visualizations?

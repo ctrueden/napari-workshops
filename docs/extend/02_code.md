@@ -6,7 +6,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.19.4
+    jupytext_version: 1.19.5
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -17,7 +17,17 @@ kernelspec:
 adjust properties, set physical scales and units, load data from files and
 the cloud with xarray and Zarr, and write your first analysis function.
 
-# 1. Create a viewer from Python (10 min)
+```{important}
+Open these notebooks in the same `extend` environment with pixi to follow along.
+From the root of the workshop repo, run from the command line
+`pixi run -e extend jupyter-lab` to launch JupyterLab in your browser.
+
+Then navigate to the `docs/extend` folder and *right-click* open `02_code.md` and
+select `Open With > Notebook`.
+```
+
+(extend-block2-viewer)=
+# 1. Create a viewer from Python
 
 In Block 1 we explored the napari GUI. Now let's do everything from code.
 Launching `napari.Viewer()` from a Jupyter notebook or Python script opens
@@ -73,7 +83,8 @@ parameters directly in `viewer.add_image()`. Check the
 for the full list.
 ```
 
-# 2. Screenshots in your notebook (3 min)
+(extend-block2-screenshots)=
+# 2. Screenshots in your notebook
 
 Just like in the GUI, you can capture what's on screen — but from code:
 
@@ -85,7 +96,8 @@ nbscreenshot(viewer)
 # nbscreenshot(viewer, canvas_only=True)  # capture just the scene, no GUI!
 ```
 
-# 3. Exercise: Layer controls from Python (5 min)
+(extend-block2-controls)=
+# 3. Exercise: Layer controls from Python
 
 Every property you adjusted with sliders and dropdowns in the GUI can be
 set from Python. Try adjusting the nuclei layer:
@@ -96,6 +108,8 @@ nuclei_layer.opacity = 0.9
 nuclei_layer.contrast_limits = (0, 20000)
 nuclei_layer.colormap = 'magenta'
 ```
+
+You can also toggle the continuous **auto-contrast** when adding an image or on an existing layer `layer.auto_contrast = True`.
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -110,7 +124,8 @@ nuclei_layer.contrast_limits = (0, 65535)
 nuclei_layer.opacity = 1.0
 ```
 
-# 4. Physical scale, units, and axis labels (10 min)
+(extend-block2-scale)=
+# 4. Physical scale, units, and axis labels
 
 Images from microscopes and other instruments have physical meaning — pixels
 correspond to real-world distances. napari can represent this with **scale**,
@@ -140,7 +155,7 @@ viewer.fit_to_view()  # fit the extent of all the layers to the canvas
 Now enable the scale bar to see the physical scale:
 
 ```{code-cell} ipython3
-viewer.scale_bar.visible = True
+viewer.canvas.overlays.scale_bar.visible = True
 viewer.dims.point = (3, 0, 0)  # the set point of the dims slider is relative to the scale of your data
 ```
 
@@ -150,15 +165,27 @@ viewer.dims.point = (3, 0, 0)  # the set point of the dims slider is relative to
 nbscreenshot(viewer)
 ```
 
+```{tip}
+Once scale and/or unit metadata are set, the status bar coordinates (bottom-left
+of the viewer) show physical values with increased precision — floats rather
+than integers — so you can estimate real-world positions as you explore.
+```
+
 ## Axis labels
 
-The dimension sliders at the bottom of the viewer show generic index labels
-by default. We can rename them to reflect the actual axes and show the floating
-axes overlay:
+The dimension sliders at the bottom of the viewer and the
+axes overlay are **automatically labelled** from the axis labels of the layers
+in the viewer. When you set `axis_labels` on a layer — or load data that ships
+with them, like an xarray `DataArray` or a plugin reading an OME-Zarr — 
+the viewer picks them up with no extra work.
+
+Let's set the axis labels on our layers and see them propagate to the viewer:
 
 ```{code-cell} ipython3
-viewer.dims.axis_labels = ['Z', 'Y', 'X']
-viewer.floating_axes.visible = True
+for layer in viewer.layers:
+    layer.axis_labels = ['Z', 'Y', 'X']
+
+viewer.canvas.overlays.axes.visible = True
 ```
 
 ## The napari-metadata plugin
@@ -173,7 +200,8 @@ The widget shows three sections:
 2. **Axes metadata** — editable axis labels, scale, translation, and units
 3. **Copy metadata** — propagate metadata from one layer to others
 
-# 5. Loading data with Python (10 min)
+(extend-block2-loading)=
+# 5. Loading data with Python
 
 napari's drag-and-drop and **File > Open** work well for many formats, but
 when you need precise control over data loading, you can use Python libraries
@@ -187,8 +215,7 @@ included in the workshop data.
 from skimage.io import imread
 from pathlib import Path
 
-# Cross-environment path: works in both MyST (CWD=docs/) and JupyterLab
-data_dir = next(p for p in [Path('extend/data'), Path('data')] if p.exists())
+data_dir = Path('data')
 
 nuclei = imread(data_dir / 'nuclei_cropped.tif')
 spots = imread(data_dir / 'spots_cropped.tif')
@@ -238,7 +265,8 @@ microscope formats) provide support for everything else. Check the
 [napari hub](https://napari-hub.org) for format-specific reader plugins.
 ```
 
-# 6. Zarr and OME-Zarr: cloud-native image data (10 min)
+(extend-block2-zarr)=
+# 6. Zarr and OME-Zarr: cloud-native image data
 
 **Zarr** is a chunked, compressed, n-dimensional array format designed for
 cloud storage. Instead of downloading the whole file, you can stream only
@@ -318,7 +346,7 @@ nbscreenshot(viewer_zarr)
 viewer_zarr.close()
 ```
 
-# 7. Full-circle: from plugin to code to napari (10 min)
+# 7. Full-circle: from plugin to code to napari
 
 To wrap this all up, let's now use [bioio](https://bioio-devs.github.io/bioio/OVERVIEW.html)
 to see how we can programmatically interact with a broad number of bioimaging formats.
@@ -380,7 +408,7 @@ In **Block 3**, we'll take our programmatic understanding of napari to the
 next step by creating an interactive widget with sliders,
 so we can tune parameters in real time — without writing any GUI code.
 
-# Sharing Time (5 min)
+# Sharing Time
 
 - What was the most interesting image you explored? Why?
 - Did managing and visualizing metadata improve your understanding of the data?

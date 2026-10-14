@@ -9,18 +9,21 @@ kernelspec:
 
 **Goal:** Get napari installed and open your first images.
 
-# Welcome (10 min)
+(intro-block1-welcome)=
+# Welcome
 
 - Introduce instructors and helpers
 - Share the [Code of Conduct](https://napari.org/stable/community/code_of_conduct.html)
 - Ask about accessibility needs (private DMs ok)
-- Share the Zulip **#napari-workshop-[DATE]** stream link in the Zoom chat; invite participants
-  to post an introduction: *"What field are you from, and what kind of images do
-  you work with?"*
-- Zoom etiquette
-  - Cameras tend to improve the experience, but it's ok to keep off
-  - 👍 reaction = ready to continue; ✋ = stuck/question
-  - If asking questions in chat, please send them to everyone unless it needs to be private
+- Share the Zulip **#napari-workshop-[DATE]** stream link with participants; for
+  online sessions, post it in the meeting chat, and for in-person sessions,
+  display or distribute the link. Invite participants to post an introduction:
+  *"What field are you from, and what kind of images do you work with?"*
+- Online participation (if applicable)
+  - Cameras can make online sessions more engaging, but are optional
+  - 👍 reaction = ready to continue; ✋ = stuck or have a question
+  - Ask questions in the meeting chat where everyone can see them, unless they
+    need to be private
 
 # Download napari
 
@@ -31,7 +34,8 @@ other desktop app. No Python or command line required.
 2. **Install:** Run the installer and follow the on-screen prompts.
 3. **Launch:** Open napari from your Applications folder / Start Menu / desktop shortcut.
 
-# About napari (10 min)
+(intro-block1-about)=
+# About napari
 
 napari is a free, open-source, multi-dimensional image viewer for Python and
 scientific image analysis. It is:
@@ -41,15 +45,18 @@ scientific image analysis. It is:
 - **Interoperable** — works with NumPy arrays, tiff files, zarr, and more
 - **Interactive** — explore and annotate your data with a handy GUI
 
+(intro-block1-install)=
 # Install the downloaded bundle
 
-# napari Demo (10 min)
+(intro-block1-demo)=
+# napari Demo
 
 During this demo, just **watch** — you don't need to follow along yet.
 Focus on seeing what napari can do, not on reproducing every step.
 You'll have plenty of hands-on time shortly.
 
-# Installation Check-in (5 min)
+(intro-block1-check-in)=
+# Installation Check-in
 
 ```{tip}
 The first launch can take up to a minute. Subsequent launches are much faster.
@@ -62,7 +69,15 @@ Everyone should now have napari open. You should see:
 - A **layer controls** panel on the top-left
 - **Viewer buttons** at the bottom of the canvas
 
-If napari is open, give a 👍 as a Zoom reaction.
+```{tip} Take a tour!
+If napari is open and you'd like a quick guided tour of the interface, open
+**Help > Take a tour** (available since napari 0.9.0). It highlights the
+canvas, layer list, layer controls, viewer buttons, dimension sliders, and
+status bar, so you can get your bearings in seconds.
+```
+
+If napari is open, signal you're ready to continue (for example, raise a hand
+in person or use a 👍 reaction online).
 
 ```{code-cell} python
 :tags: [remove-cell]
@@ -76,7 +91,8 @@ viewer = napari.Viewer()
 nbscreenshot(viewer)
 ```
 
-# What Are Images? (10 min)
+(intro-block1-images)=
+# What Are Images?
 
 Before diving into napari, a quick conceptual grounding:
 
@@ -86,11 +102,15 @@ Before diving into napari, a quick conceptual grounding:
 - A common (but not universal) **convention**: TZYX ordering for time, depth, height, and width dimensions
 - **multi-channel images**  — can be just another dimension in the array (e.g. RGB(A) is shape height, width, 3 (or 4))
 - **labels** — images where pixel values are integers representing categories (e.g. 0=background, 1=cell1, 2=cell2, etc.)
+- **scale and units** — each pixel corresponds to a real-world physical size
 
 napari can display all of these — the dimension sliders let you navigate indexes
 beyond the 2D canvas.
 
-# Open Your First Image and take Screenshots (5 min)
+![Diagram showing that images are arrays of numbers rendered as pixel brightness, zero-based indexing, n-dimensional TZYX stacks, multi-channel images as an extra axis, integer-labeled images, and a brief comparison of raster arrays vs. vector graphics (Points, Shapes, Vectors, Tracks layers).](../_resources/arrays_and_images_diagram.svg)
+
+(intro-block1-first-image)=
+# Open Your First Image and take Screenshots
 
 1. In napari, select: **File > Open Sample > napari builtins > Cells (3D + 2Ch)**
 2. Two layers appear in the layer list: `membrane` and `nuclei`

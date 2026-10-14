@@ -10,7 +10,8 @@ kernelspec:
 **Goal:** Install a plugin from the napari hub, open images with it, and
 manually annotate images using Points, Shapes, and Labels layers.
 
-# Plugins and the napari Hub (5 min)
+(intro-block3-plugins)=
+# Plugins and the napari Hub
 
 napari's functionality can be extended with **plugins** — Python packages
 contributed by the community.
@@ -40,7 +41,8 @@ If a plugin doesn't work as expected, check its GitHub page or ask on
 [forum.image.sc](https://forum.image.sc/tag/napari).
 ```
 
-# Opening Images with ndevio (10 min)
+(intro-block3-ndevio)=
+# Opening Images with ndevio
 
 [ndevio](https://napari-hub.org/plugins/ndevio) is a plugin that
 adds enhanced reading support for a wide range of file formats,
@@ -95,7 +97,8 @@ then paste (`Ctrl+V`) into Zulip.
 - What format did you open? What did you notice about how it loaded?
 ```
 
-# napari-ome-zarr and the IDR (10 min)
+(intro-block3-ome-zarr)=
+# napari-ome-zarr and the IDR
 
 napari-ome-zarr lets you
 stream images directly from the web — no download required. The
@@ -126,7 +129,7 @@ use option 2 or 3 from the file menu above.
 ```{caution}
 Streaming large remote datasets requires a network connection. If the connection
 is slow during the workshop, we recommend 
-`https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.5/idr0062A/6001240_labels.zarr`.
+`https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.5/idr0062A/6001240_labels.zarr`
 ```
 
 **After it loads, open napari-metadata** (**Plugins > napari-metadata: Metadata Widget**)
@@ -151,13 +154,15 @@ then paste (`Ctrl+V`) into Zulip.
 - (Optional) Include what the metadata widget showed for axis scales and units.
 ```
 
-# Sharing Time (5 min)
+(intro-block3-sharing)=
+# Sharing Time
 
 - What did you open? *(check the Zulip stream for screenshots!)*
 - What did the metadata widget show for axis scales and units?
 - Any plugins you found interesting while browsing napari-hub?
 
-# What Is Annotation? (5 min)
+(intro-block3-annotation)=
+# What Is Annotation?
 
 **Manual annotation** means marking up images by hand. Common reasons:
 
@@ -173,7 +178,7 @@ Two fundamental approaches:
 | **Vector** | Points, Shapes | Marking locations, outlines |
 | **Raster** | Labels | Pixel-wise segmentation masks |
 
-# Annotation with Points and Shapes (10 min)
+# Annotation with Points and Shapes
 
 Use the **Cells (3D + 2Ch)** sample for this exercise.
 You may use {download}`scripts/annotation.py` to have a base visualization for modification.
@@ -184,8 +189,7 @@ import napari
 from napari.utils import nbscreenshot
 from pathlib import Path
 
-# CWD is project root (docs/) in MyST, notebook dir in JupyterLab
-script_dir = next(p for p in [Path('scripts'), Path('intro-gui/scripts')] if p.exists())
+script_dir = Path('scripts')
 
 viewer = napari.Viewer()
 viewer.open(script_dir / 'annotation.py')
@@ -210,7 +214,9 @@ viewer.close()
 4. Each click drops a point; Use the Backspace/Delete key to remove the last added point (or the x icon)                        
 5. Switch to the **Select** tool to move existing points
 
-Compare visualization in 2D with checking `out_of_slice_display` in layer controls — it shows points that are outside the current z-slice.
+Compare visualization in 2D by changing the `projection mode` in layer controls 
+and right clicking on the dimension slider to change the number of displayed
+slices (we call this Thick Slicing).
 
 ## Shapes layer — outlining a region
 

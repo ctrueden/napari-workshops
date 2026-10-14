@@ -11,7 +11,8 @@ kernelspec:
 using a plugin GUI, take a brief look at the napari console, and learn where
 to go from here.
 
-# napari-skimage Segmentation Demo (5 min + 20 min hands-on)
+(block4-analysis-segmentation)=
+# napari-skimage Segmentation Demo
 
 [napari-skimage](https://napari-hub.org/plugins/napari-skimage)
 provides GUI access to common image-processing steps powered by scikit-image —
@@ -80,8 +81,8 @@ segmented = ndi.label(cleaned)[0]
 labels_layer = viewer.add_labels(segmented)
 
 # viewer.dims.current_step = (27, 0, 0)
-viewer.dims.ndisplay=3
-viewer.camera.angles = (-20, 35, -40)
+viewer.dims.ndisplay = 3
+viewer.scene.camera.angles = (-20, 35, -40)
 ```
 
 ```{code-cell} python
@@ -94,13 +95,15 @@ nbscreenshot(viewer)
 viewer.close()
 ```
 
-# Sharing Time and Q&A (5 min)
+(intro-block4-sharing)=
+# Sharing Time and Q&A
 
 - How many nuclei did your segmentation find? *(check the Zulip stream for screenshots!)*
 - What measurements were in the regionprops table?
 - Open questions about the workflow or napari in general?
 
-# Where to Go From Here (5 min)
+(block4-analysis-next)=
+# Where to Go From Here
 
 ## Learning Resources
 
@@ -124,7 +127,8 @@ viewer.close()
 - Browse [napari-hub.org](https://napari-hub.org) for plugins relevant to your field
 - Add a new example or sample data to napari!
 
-# Survey + Wrap-up (10 min)
+(block4-analysis-wrapup)=
+# Survey + Wrap-up
 
 Please fill in the post-workshop survey (link shared by instructors).
 

@@ -10,7 +10,8 @@ kernelspec:
 **Goal:** Navigate the viewer confidently, adjust how images look, try the
 napari gallery, and understand image metadata.
 
-# Instructor-guided GUI Walkthrough (25 min)
+(block2-gui-walkthrough)=
+# Instructor-guided GUI Walkthrough
 
 Follow along as the instructor walks through the major parts of the napari
 interface using the **Cells (3D + 2Ch)** sample image.
@@ -47,7 +48,7 @@ nbscreenshot(viewer)
 
 ## Key Interactions
 
-- **Zoom:** right-click and drag or scroll wheel (or two-finger scroll on trackpad)
+- **Canvas zoom:** right-click and drag or scroll wheel (or two-finger scroll on trackpad)
 - **Pan:** click and drag on the canvas, hold Shift to pan in 3D mode
 - **Reset view:** click the **home button** (bottom-right row of viewer buttons)
 
@@ -81,7 +82,7 @@ it means you can click it with the right mouse button to bring up more advanced 
 ```{code-cell} python
 :tags: [remove-cell]
 viewer.dims.axis_labels = ['Z', 'Y', 'X']
-viewer.axes.visible = True
+viewer.scene.overlays.axes.visible = True
 viewer.dims.ndisplay = 3
 ```
 ```{code-cell} python
@@ -99,7 +100,7 @@ In 3D mode you can click-drag to rotate the volume.
 ```{code-cell} python
 :tags: [remove-cell]
 viewer.dims.ndisplay = 3
-viewer.camera.angles = (-27, 8, -58)
+viewer.scene.camera.angles = (-27, 8, -58)
 ```
 ```{code-cell} python
 :tags: [remove-input]
@@ -109,12 +110,12 @@ nbscreenshot(viewer)
 ## Overlays
 
 There are [viewer overlays](https://napari.org/stable/getting_started/viewer.html#viewer-overlays)
-that can be added to the canvas. In this case we will add the Axes overlay to show 
-the Axis Labels attached to the data. Go to **View > Axes > Axes Visible** to turn it on.
+that can be added to the canvas. In this case we will add the Scene Axes overlay to show 
+the Axis Labels attached to the data. Go to **View > Scene Axes > Toggle Scene Axes** to turn it on.
 
 Try also to visualize the Color Bar (LUT) overlay for each layer by **right clicking** on the layer(s) that you want to visualize or toggle the color bar from the navbar menu **Layers > Measure > Color Bar**.
 
-We can also enable the scale bar with **View > Scale Bar > Visible** from the navbar.
+We can also enable the scale bar with **View > Scale Bar > Toggle Scale Bar** from the navbar.
 The scale bar automatically detects units from the currently
 loaded layers. If your layers have [consistent units](https://napari.org/stable/guides/units.html#when-units-are-consistent-across-layers),
 the scale bar displays the physical scale in the correct unit (e.g. `µm`).
@@ -136,9 +137,16 @@ With a layer selected, [layer controls](https://napari.org/stable/getting_starte
 - **Blending** — how layers are composited
 - **Opacity** — layer transparency
 
+```{tip} Selecting multiple layers
+Since napari 0.9.0, you can select several layers at once (e.g. `Ctrl`/`Cmd`-click
+or `Shift`-click in the layer list) and the layer controls dynamically show the
+controls shared between them — handy for applying the same settings to many
+layers at once.
+```
+
 ```{code-cell} python
 :tags: [remove-cell]
-viewer.axes.visible = False
+viewer.scene.overlays.axes.visible = False
 viewer.dims.ndisplay = 2
 viewer.dims.current_step = (29, 100, 100)
 nuclei = viewer.layers['nuclei']
@@ -184,7 +192,7 @@ including how many layers are shown in each panel (i.e. stride).
 :tags: [remove-cell]
 viewer = napari.Viewer()
 viewer.open_sample('napari', 'lily')
-viewer.grid.enabled = True
+viewer.canvas.grid.enabled = True
 ```
 ```{code-cell} python
 :tags: [remove-input]
@@ -205,10 +213,10 @@ physical units — the scale bar automatically picks them up:
 
 ```{code-cell} python
 :tags: [remove-cell]
-viewer.grid.stride = 2
+viewer.canvas.grid.stride = 2
 for l in viewer.layers:
     l.colorbar.visible = True
-viewer.scale_bar.visible = True
+viewer.canvas.overlays.scale_bar.visible = True
 ```
 
 ```{code-cell} python
@@ -226,7 +234,8 @@ change different properties. You can also access individual
 layers using `viewer.layers` — the starting point for scripting napari in
 your own workflows.
 
-# Layer Metadata with napari-metadata  (5 min)
+(intro-block2-metadata)=
+# Layer Metadata with napari-metadata
 
 The [**napari-metadata**](https://napari.org/napari-metadata/)
 plugin lets you view and edit layer metadata, including 
@@ -242,15 +251,14 @@ There are three parts to the widget:
 
 ```{important} Layer metadata is always connected to viewer metadata
 Changing layer metadata usually has some effect on how the image is displayed 
-in the viewer, such as with scale, units and translate. However, other
-metadata fields like axis labels still do not update the axes overlay or
-dimension slider labels. This is partly due to the complexity of having multiple
-layer metadata sources, but is something we are looking to improve in future
-releases. For details, see the progress made with units in the
-[scale bar auto-units guide](https://napari.org/stable/guides/units.html).
+in the viewer, such as with scale, units, translate, and axis labels. For
+details, see the progress made with units in the
+[scale bar auto-units guide](https://napari.org/stable/guides/units.html)
+and the [axis names guide](https://napari.org/stable/guides/axis-names.html).
 ```
 
-# Gallery Exploration Breakout (15 min)
+(intro-block2-gallery)=
+# Gallery Exploration Breakout
 
 ```{admonition} Breakout
 :class: tip
@@ -297,7 +305,8 @@ Take a screenshot and post it to the **#workshops** stream on
 17. Tracks 3D
 
 
-# Sharing Time (5 min)
+(intro-block2-sharing)=
+# Sharing Time
 
 - What did you find in the gallery? *(check the Zulip stream for screenshots!)*
 - Any surprising layer types or visualizations?

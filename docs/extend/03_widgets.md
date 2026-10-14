@@ -6,16 +6,16 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.19.4
+    jupytext_version: 1.19.5
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
 
-**Goal:** Add interactive GUI widgets, custom keybindings, layer event
-callbacks, and mouse drag interactions to napari — turning analysis functions
-into interactive tools.
+**Goal:** Add interactive GUI widgets, layer event callbacks, and mouse
+drag interactions to napari — turning analysis functions into interactive
+tools.
 
 # Setup
 
@@ -28,8 +28,7 @@ from napari.utils import nbscreenshot
 from pathlib import Path
 from skimage.io import imread
 
-# Cross-environment path
-data_dir = next(p for p in [Path('extend/data'), Path('data')] if p.exists())
+data_dir = Path('data')
 nuclei = imread(data_dir / 'nuclei_cropped.tif')
 spots = imread(data_dir / 'spots_cropped.tif')
 
@@ -44,7 +43,8 @@ viewer.add_image(spots, name='spots', colormap='magenta', blending='additive')
 nbscreenshot(viewer)
 ```
 
-# 1. Writing analysis functions (10 min)
+(extend-block3-functions)=
+# 1. Writing analysis functions
 
 First, let's write the analysis function we'll turn into a widget. The spots
 image has some background autofluorescence — we can clean it up with a
@@ -97,7 +97,8 @@ The spots stand out much more clearly against the background! But what if we
 want to try a different `sigma` value? We'd have to re-run the cell manually
 each time — not exactly an interactive exploration.
 
-# 2. Interactive filtering with magicgui (25 min)
+(extend-block3-magicgui)=
+# 2. Interactive filtering with magicgui
 
 In Block 2 we wrote a `gaussian_high_pass` function to clean up the spots
 image — but changing the `sigma` parameter meant re-running a cell each time.
@@ -282,7 +283,7 @@ def detect_spots(
     # Third column is the detected sigma — convert to diameters for sizing
     sizes = 2 * np.sqrt(2) * blobs[:, 2]
 
-    return (coords, {"size": sizes, "face_color": "yellow"}, "Points")
+    return (coords, {"name": "points", "size": sizes, "border_color": "yellow", "face_color": "#ffffff00"}, "Points")
 ```
 
 ```{code-cell} ipython3
@@ -313,68 +314,8 @@ ndevio returned a `list` of `LayerDataTuple`s. Can you modify `detect_spots()`
 to also return the high-pass filtered image as an image layer?
 Hint: Only the return statement needs to change!
 ```
-# 3. Custom keybindings (15 min)
-
-Keybindings let you trigger actions with keyboard shortcuts. napari makes
-this remarkably easy with the `bind_key` decorator.
-
-Let's bind `Shift-D` to report how many spots were detected in the current
-Points layer. We'll attach it to the Points layer type so it only fires
-when a Points layer is active:
-
-```{code-cell} ipython3
-from napari.layers import Points
-from napari.utils.notifications import show_info
-
-@Points.bind_key("Shift-D")
-def report_spot_count(points_layer: Points):
-    """Print the number of detected spots in the active Points layer."""
-    count = len(points_layer.data)
-    show_info(f"Detected {count} spots")
-```
-
-Now select the Points layer created by `detect_spots` and press `Shift-D`.
-You should see a notification pop up in the viewer!
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-# Simulate for the notebook
-report_spot_count(viewer.layers['Points'])
-```
-
-```{tip}
-We used `show_info()` instead of `print()` — this displays a notification
-right in the napari viewer, which is much more visible than looking for
-output in a notebook or terminal. Check out
-[`napari.utils.notifications`](https://napari.org/dev/api/napari.utils.notifications.html)
-for `show_warning()` and `show_error()` too.
-```
-
-```{important}
-At the moment, `bind_key` shortcuts cannot overwrite napari's built-in
-shortcuts. If a built-in shortcut uses the same key combination, the
-built-in one wins — silently. Check **File > Preferences > Shortcuts**
-to see which keys are already taken.
-```
-
-Keybindings can also be attached to the viewer (fires regardless of which
-layer is active):
-
-```{code-cell} ipython3
-@viewer.bind_key('Shift-R')
-def run_detector(viewer):
-    """Re-run spot detection with current settings."""
-    detect_spots(viewer.layers['spots'].data)
-```
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-viewer.close()
-```
-
-# 4. Layer events (15 min)
+(extend-block3-events)=
+# 3. Layer events
 
 napari layers emit **events** when their properties change — data, colormap,
 opacity, even individual point positions. You can connect custom functions
@@ -453,7 +394,8 @@ moving_points.events.data.disconnect(warp_on_point_changed)
 viewer.layers['checkerboard'].data = image
 ```
 
-# 5. Mouse callbacks (15 min)
+(extend-block3-mouse)=
+# 4. Mouse callbacks
 
 Layer events fire when a change *completes*. But what if you want to react
 while the user is dragging? That's where **mouse callbacks** come in.
@@ -531,7 +473,6 @@ In this block you learned to:
 | Technique | What it does | How to attach |
 |-----------|-------------|---------------|
 | **magicgui** | Auto-generate GUI widgets from functions | `@magicgui` + `viewer.window.add_dock_widget()` |
-| **Custom keybindings** | Trigger actions with keyboard shortcuts | `@Points.bind_key('Shift-D')` / `@viewer.bind_key('key')` |
 | **Layer events** | React to property changes | `layer.events.data.connect(callback)` |
 | **Mouse callbacks** | React to mouse drag in real time | `layer.mouse_drag_callbacks.append(callback)` |
 
